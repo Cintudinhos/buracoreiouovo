@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802696536344",
+    "project_id": "buracoreiouovo",
+    "storage_bucket": "buracoreiouovo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802696536344:android:5807bd69539e3544c87e6d",
+        "android_client_info": {
+          "package_name": "com.cintudinhos.buracoreiouovo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-60vwZvL4eBmty7VIgMnzE7VdEzDmuTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

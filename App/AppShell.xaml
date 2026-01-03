@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:local="clr-namespace:App.Pages"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="App.AppShell"
+       Title="Buraco Rei ou Ovo">
+
+    <ShellContent ContentTemplate="{DataTemplate local:MainPage}"
+                  Route="MainPage"
+                  Title="Buraco Rei ou Ovo" />
+
+</Shell>
