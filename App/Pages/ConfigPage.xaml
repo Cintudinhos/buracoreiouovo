@@ -1,57 +1,75 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:viewmodel="clr-namespace:App.ViewModels"
+             xmlns:viewmodels="clr-namespace:App.ViewModels"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App.Pages.ConfigPage"
-             x:DataType="viewmodel:ConfigViewModel"
-             Title="Configurations">
+             x:DataType="viewmodels:ConfigViewModel"
+             Title="Configurações">
 
-    <Grid ColumnSpacing="10"
-          Margin="10"
-          RowSpacing="10">
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <Grid Margin="10">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Column="0"
-               Grid.Row="0"
-               HorizontalOptions="End"
-               VerticalOptions="Center"
-               Text="E-mail" />
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                Padding="10">
 
-        <Entry Grid.Column="1"
-               Grid.Row="0"
-               Placeholder="e-mail"
-               VerticalOptions="Center"
-               Text="{Binding Email}" />
+            <Grid ColumnSpacing="10"
+                  RowSpacing="10">
 
-        <Label Grid.Column="0"
-               Grid.Row="1"
-               HorizontalOptions="End"
-               VerticalOptions="Center"
-               Text="Password" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <Entry Grid.Column="1"
-               Grid.Row="1"
-               IsPassword="True"
-               Placeholder="password"
-               VerticalOptions="Center"
-               Text="{Binding Password}" />
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-        <Button Grid.ColumnSpan="2"
-                Grid.Row="2"
+                <Label Grid.ColumnSpan="2"
+                       Grid.Row="0"
+                       VerticalOptions="Center"
+                       Text="Informações de Login" />
+
+                <Label Grid.Column="0"
+                       Grid.Row="1"
+                       VerticalOptions="Center"
+                       Text="E-mail" />
+
+                <Entry Grid.Column="1"
+                       Grid.Row="1"
+                       Placeholder="e-mail"
+                       VerticalOptions="Center"
+                       Text="{Binding Email}" />
+
+                <Label Grid.Column="0"
+                       Grid.Row="2"
+                       VerticalOptions="Center"
+                       Text="Senha" />
+
+                <Entry Grid.Column="1"
+                       Grid.Row="2"
+                       IsPassword="True"
+                       Placeholder="senha"
+                       VerticalOptions="Center"
+                       Text="{Binding Password}" />
+
+            </Grid>
+
+        </Border>
+
+        <Button Grid.Column="0"
+                Grid.Row="1"
                 VerticalOptions="End"
                 Command="{Binding SaveConfigCommand}"
                 IsEnabled="{Binding CanSave}"
                 Text="Save" />
+
     </Grid>
 
 </ContentPage>

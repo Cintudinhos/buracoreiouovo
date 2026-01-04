@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:viewmodels="clr-namespace:App.ViewModels"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App.Pages.CrownEggPage"
+             x:DataType="viewmodels:CrownEggViewModel"
+             Title="Reis e Ovos">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding GoToConfigPageCommand}"
+                     IconImageSource="add.png"
+                     Order="Primary"
+                     Priority="0"
+                     Text="Adicionar" />
+
+        <ToolbarItem Command="{Binding GoToConfigPageCommand}"
+                     IconImageSource="settings.png"
+                     Order="Secondary"
+                     Priority="0"
+                     Text="Configurações" />
+    </ContentPage.ToolbarItems>
+
+    <Grid ColumnSpacing="10"
+          Margin="10"
+          RowSpacing="10">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0"
+                Grid.Row="0">
+
+            <VerticalStackLayout>
+                <Image Source="crown.png"
+                       HeightRequest="100"
+                       WidthRequest="100" />
+
+                <CollectionView>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="1">
+
+            <VerticalStackLayout>
+                <Image Source="egg.png"
+                       HeightRequest="100"
+                       WidthRequest="100" />
+
+                <CollectionView>
+                </CollectionView>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+    
+</ContentPage>

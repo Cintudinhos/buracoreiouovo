@@ -4,11 +4,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace App.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class CrownEggViewModel : ObservableObject
 {
     [RelayCommand]
     private async Task GoToConfigPage()
     {
-        await Shell.Current.GoToAsync(nameof(ConfigPage));
+        await Shell.Current.GoToAsync($"//{nameof(ConfigPage)}");
     }
 }

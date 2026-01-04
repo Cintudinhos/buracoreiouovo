@@ -10,7 +10,7 @@ internal static class ServiceCollectionExtensions
     {
         public IServiceCollection AddAppServices()
         {
-            services.AddSingleton<MainViewModel>();
+            services.AddSingleton<CrownEggViewModel>();
 
             services.AddTransient<ConfigViewModel>();
 

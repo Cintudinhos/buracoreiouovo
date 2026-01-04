@@ -1,12 +1,13 @@
 ﻿#pragma warning disable MVVMTK0045
 
 using System.Net.Mail;
+using App.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace App.ViewModels;
 
-public partial class ConfigViewModel : ObservableObject, IQueryAttributable
+public partial class ConfigViewModel : ObservableObject
 {
     [ObservableProperty]
     private bool _canSave;
@@ -20,17 +21,6 @@ public partial class ConfigViewModel : ObservableObject, IQueryAttributable
     private const string PreferencesEmail = "Preferences_Email";
     private const string PreferencesIsConfigured = "Preferences_IsConfigured";
     private const string PreferencesPassword = "Preferences_Password";
-
-    public bool IsFirstConfig { get; private set; }
-
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
-    {
-        if (query.TryGetValue(nameof(IsFirstConfig), out object? isFirstConfigValue) &&
-            isFirstConfigValue is bool isFirstConfig)
-        {
-            IsFirstConfig = isFirstConfig;
-        }
-    }
 
     public async Task InitializeAsync()
     {
@@ -56,7 +46,7 @@ public partial class ConfigViewModel : ObservableObject, IQueryAttributable
 
         await SecureStorage.SetAsync(PreferencesPassword, Password ?? string.Empty);
 
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync($"//{nameof(CrownEggPage)}");
     }
 
     private bool ValidateInputs()

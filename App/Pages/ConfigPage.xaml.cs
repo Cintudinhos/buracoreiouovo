@@ -18,13 +18,5 @@ public partial class ConfigPage : ContentPage
     protected override async void OnAppearing()
     {
         await _configViewModel.InitializeAsync();
-
-        if (BindingContext is ConfigViewModel configViewModel && configViewModel.IsFirstConfig)
-        {
-            Shell.SetBackButtonBehavior(this, new BackButtonBehavior
-            {
-                IsVisible = false
-            });
-        }
     }
 }
