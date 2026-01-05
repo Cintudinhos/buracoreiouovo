@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:models="clr-namespace:App.Core.Models"
              xmlns:viewmodels="clr-namespace:App.ViewModels"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App.Pages.CrownEggPage"
@@ -30,34 +31,104 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Column="0"
-                Grid.Row="0">
+        <HorizontalStackLayout Grid.Column="0"
+                               Grid.Row="0"
+                               Margin="10,0">
 
-            <VerticalStackLayout>
-                <Image Source="crown.png"
-                       HeightRequest="100"
-                       WidthRequest="100" />
+            <Label Margin="0,0,5,0"
+                   VerticalOptions="Center"
+                   Text="Ano:" />
 
-                <CollectionView>
-                </CollectionView>
-            </VerticalStackLayout>
-        </Border>
+            <Picker ItemsSource="{Binding Years}"
+                    Margin="5,0,0,0"
+                    SelectedItem="{Binding SelectedYear}"
+                    VerticalOptions="Center" />
+        </HorizontalStackLayout>
 
         <Border Grid.Column="0"
                 Grid.Row="1">
+            <ScrollView>
+                <VerticalStackLayout>
+                    <Image Source="crown.png"
+                           HeightRequest="100"
+                           WidthRequest="100" />
 
-            <VerticalStackLayout>
-                <Image Source="egg.png"
-                       HeightRequest="100"
-                       WidthRequest="100" />
+                    <CollectionView ItemsSource="{Binding Crowns}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:CrownEggEntry">
+                                <Grid Margin="10,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                <CollectionView>
-                </CollectionView>
-            </VerticalStackLayout>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label FontAttributes="Bold"
+                                            FontSize="20"
+                                            Grid.Column="0"
+                                            Grid.Row="0"
+                                            Text="{Binding Name}" />
+
+                                    <Label FontAttributes="Bold"
+                                            FontSize="20"
+                                            Grid.Column="1"
+                                            Grid.Row="0"
+                                            Text="{Binding Quantity}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+
+        <Border Grid.Column="0"
+                Grid.Row="2">
+
+            <ScrollView>
+                <VerticalStackLayout>
+                    <Image Source="egg.png"
+                           HeightRequest="100"
+                           WidthRequest="100" />
+
+                    <CollectionView ItemsSource="{Binding Eggs}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:CrownEggEntry">
+                                <Grid Margin="10,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <Label FontAttributes="Bold"
+                                            FontSize="20"
+                                            Grid.Column="0"
+                                            Grid.Row="0"
+                                            Text="{Binding Name}" />
+
+                                    <Label FontAttributes="Bold"
+                                            FontSize="20"
+                                            Grid.Column="1"
+                                            Grid.Row="0"
+                                            Text="{Binding Quantity}" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
         </Border>
     </Grid>
-    
+
 </ContentPage>

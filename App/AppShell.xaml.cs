@@ -1,14 +1,18 @@
-﻿using App.Pages;
+﻿using App.Core.Models;
+using App.Infrastructure.Repositories;
+using App.Pages;
 
 namespace App;
 
 public partial class AppShell : Shell
 {
-    private const string PreferencesIsConfigured = "Preferences_IsConfigured";
+    private readonly IPreferencesRepository _preferencesRepository;
 
-    public AppShell()
+    public AppShell(IPreferencesRepository preferencesRepository)
     {
         InitializeComponent();
+
+        _preferencesRepository = preferencesRepository;
     }
 
 
@@ -18,17 +22,17 @@ public partial class AppShell : Shell
 
         Dispatcher.Dispatch(async () =>
         {
-            bool isConfigured = Preferences.Get(PreferencesIsConfigured, false);
+            AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
 
-            if (!isConfigured)
+            if (!appPreferences.IsConfigured)
             {
                 Page? crownEggPage = Application.Current?.Windows[0].Page;
 
                 if (crownEggPage is not null)
                 {
                     await crownEggPage.DisplayAlertAsync("Aplicativo não configurado",
-                                                     "O aplicativo 'Buraco Rei ou Ovo' ainda não está corretamente configurado",
-                                                     "Ir para configurações");
+                                                         "O aplicativo 'Buraco Rei ou Ovo' ainda não está corretamente configurado",
+                                                         "Ir para configurações");
                 }
 
                 await GoToAsync($"//{nameof(ConfigPage)}");

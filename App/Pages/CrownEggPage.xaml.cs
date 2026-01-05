@@ -4,10 +4,23 @@ namespace App.Pages;
 
 public partial class CrownEggPage : ContentPage
 {
-    public CrownEggPage(CrownEggViewModel mainViewModel)
+    public CrownEggPage(CrownEggViewModel viewModel)
     {
         InitializeComponent();
 
-        BindingContext = mainViewModel;
+        BindingContext = viewModel;
+    }
+
+    protected override void OnAppearing()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            if (BindingContext is CrownEggViewModel viewModel)
+            {
+                await viewModel.InitializeAsync();
+            }
+        });
+
+        base.OnAppearing();
     }
 }

@@ -1,9 +1,26 @@
+using App.ViewModels;
+
 namespace App.Pages;
 
 public partial class CrownEggListPage : ContentPage
 {
-	public CrownEggListPage()
-	{
-		InitializeComponent();
-	}
+    public CrownEggListPage(CrownEggListViewModel viewModel)
+    {
+        InitializeComponent();
+
+        BindingContext = viewModel;
+    }
+
+    protected override void OnAppearing()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            if (BindingContext is CrownEggListViewModel viewModel)
+            {
+                await viewModel.InitializeAsync();
+            }
+        });
+
+        base.OnAppearing();
+    }
 }

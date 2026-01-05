@@ -1,13 +1,16 @@
 ﻿#pragma warning disable MVVMTK0045
 
 using System.Net.Mail;
+using App.Core.Models;
+using App.Infrastructure.Repositories;
 using App.Pages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace App.ViewModels;
 
-public partial class ConfigViewModel : ObservableObject
+public partial class ConfigViewModel(IPreferencesRepository preferencesRepository)
+    : ObservableObject
 {
     [ObservableProperty]
     private bool _canSave;
@@ -18,14 +21,14 @@ public partial class ConfigViewModel : ObservableObject
     [ObservableProperty]
     private string? _password;
 
-    private const string PreferencesEmail = "Preferences_Email";
-    private const string PreferencesIsConfigured = "Preferences_IsConfigured";
-    private const string PreferencesPassword = "Preferences_Password";
+    private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
 
     public async Task InitializeAsync()
     {
-        Email = Preferences.Get(PreferencesEmail, string.Empty);
-        Password = await SecureStorage.GetAsync(PreferencesPassword) ?? string.Empty;
+        AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+
+        Email = appPreferences.Email;
+        Password = appPreferences.Password;
     }
 
     partial void OnEmailChanged(string? value)
@@ -41,10 +44,14 @@ public partial class ConfigViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveConfig()
     {
-        Preferences.Set(PreferencesIsConfigured, true);
-        Preferences.Set(PreferencesEmail, Email);
+        AppPreferences appPreferences = new()
+        {
+            Email = Email,
+            IsConfigured = true,
+            Password = Password,
+        };
 
-        await SecureStorage.SetAsync(PreferencesPassword, Password ?? string.Empty);
+        await _preferencesRepository.SavePreferencesAsync(appPreferences);
 
         await Shell.Current.GoToAsync($"//{nameof(CrownEggPage)}");
     }

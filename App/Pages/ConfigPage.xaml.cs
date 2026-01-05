@@ -4,19 +4,23 @@ namespace App.Pages;
 
 public partial class ConfigPage : ContentPage
 {
-    private readonly ConfigViewModel _configViewModel;
-
     public ConfigPage(ConfigViewModel configViewModel)
     {
-        _configViewModel = configViewModel;
-
         InitializeComponent();
 
         BindingContext = configViewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
-        await _configViewModel.InitializeAsync();
+        Dispatcher.Dispatch(async () =>
+        {
+            if (BindingContext is ConfigViewModel viewModel)
+            {
+                await viewModel.InitializeAsync();
+            }
+        });
+
+        base.OnAppearing();
     }
 }
