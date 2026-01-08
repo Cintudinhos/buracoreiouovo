@@ -1,31 +1,22 @@
-﻿using App.Core.Enums;
-using App.Core.Models;
+﻿using App.Core.Models;
 using App.Infrastructure.Clients;
 
 namespace App.Services;
 
 public interface ICrownEggService
 {
-    Task<CrownEggEntry[]> GetCrownEggEntriesAsync();
+    Task<CrownEggEntry[]> GetCrownEggEntriesAsync(int year);
 }
 
-public class CrownEggService(IAuthClient authClient)
+public class CrownEggService(IFirestoreClient firestoreClient)
     : ICrownEggService
 {
-    private readonly IAuthClient _authClient = authClient;
+    private readonly IFirestoreClient _firestoreClient = firestoreClient;
 
-    public async Task<CrownEggEntry[]> GetCrownEggEntriesAsync()
+    public async Task<CrownEggEntry[]> GetCrownEggEntriesAsync(int year)
     {
-        // Simulate async data retrieval
-        await Task.Delay(100);
 
-        return
-        [
-            new CrownEggEntry(DateTime.Now.AddDays(-10), CrownOrEgg.Crown, "Player 1"),
-            new CrownEggEntry(DateTime.Now.AddDays(-9), CrownOrEgg.Egg, "Player 2"),
-            new CrownEggEntry(DateTime.Now.AddDays(-8), CrownOrEgg.Crown, "Player 3"),
-            new CrownEggEntry(DateTime.Now.AddDays(-7), CrownOrEgg.Egg, "Player 4"),
-            new CrownEggEntry(DateTime.Now.AddDays(-6), CrownOrEgg.Crown, "Player 5"),
-        ];
+
+        return [];
     }
 }

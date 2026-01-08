@@ -5,28 +5,29 @@ using Microsoft.Extensions.Options;
 
 namespace App.Infrastructure.Clients;
 
-public interface IAuthClient
+public interface ILoginClient
 {
-    Task<RefreshResponse?> RefreshAsync(string refreshToken);
+    Task<LoginResponse?> LoginAsync(string email, string password);
 }
 
-public class AuthClient(IOptions<Configuration> options,
-                        HttpClient httpClient)
-    : IAuthClient
+public class LoginClient(IOptions<Configuration> options,
+                         HttpClient httpClient)
+    : ILoginClient
 {
-    private const string BaseUrlV1 = "v1/token";
+    private const string BaseUrlV1 = "v1/accounts";
 
     private readonly Configuration _configuration = options.Value;
     private readonly HttpClient _httpClient = httpClient;
 
-    public async Task<RefreshResponse?> RefreshAsync(string refreshToken)
+    public async Task<LoginResponse?> LoginAsync(string email, string password)
     {
-        string requestUri = $"{BaseUrlV1}?key={_configuration.ApiKey}";
+        string requestUri = $"{BaseUrlV1}:signInWithPassword?key={_configuration.ApiKey}";
 
         var body = new
         {
-            grant_type = "refresh_token",
-            refresh_token = refreshToken,
+            email,
+            password,
+            returnSecureToken = true
         };
 
         using HttpRequestMessage request = new(HttpMethod.Post, requestUri)
@@ -41,8 +42,8 @@ public class AuthClient(IOptions<Configuration> options,
             return null;
         }
 
-        RefreshResponse? refreshResponse = await response.Content.ReadFromJsonAsync<RefreshResponse>();
+        LoginResponse? loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
-        return refreshResponse;
+        return loginResponse;
     }
 }

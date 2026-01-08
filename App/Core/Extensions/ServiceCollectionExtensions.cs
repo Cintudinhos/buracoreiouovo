@@ -1,5 +1,6 @@
 ﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
 
+using App.Core.Handlers;
 using App.Core.Models;
 using App.Infrastructure.Clients;
 using App.Infrastructure.Repositories;
@@ -15,10 +16,22 @@ internal static class ServiceCollectionExtensions
     {
         public IServiceCollection AddAppClients(Configuration configuration)
         {
-            IHttpClientBuilder authClientBuilder = services.AddHttpClient<IAuthClient, AuthClient>(client =>
+            services.AddHttpClient<IAuthClient, AuthClient>(client =>
             {
                 client.BaseAddress = new Uri(configuration.BaseAddress.Auth);
             });
+
+            services.AddHttpClient<ILoginClient, LoginClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.BaseAddress.Login);
+            });
+
+            IHttpClientBuilder firestoreClientBuilder = services.AddHttpClient<IFirestoreClient, FirestoreClient>(client =>
+            {
+                client.BaseAddress = new Uri(configuration.BaseAddress.Firestore);
+            });
+
+            firestoreClientBuilder.AddHttpMessageHandler<AuthenticationHandler>();
 
             return services;
         }
@@ -34,9 +47,11 @@ internal static class ServiceCollectionExtensions
 
             // repositories
             services.AddSingleton<IPreferencesRepository, PreferencesRepository>();
+            services.AddSingleton<IStateRepository, StateRepository>();
 
             // services
-            services.AddTransient<ICrownEggService, CrownEggService>();
+            services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<ICrownEggService, CrownEggService>();
 
             // viewmodels
             services.AddTransient<ConfigViewModel>();

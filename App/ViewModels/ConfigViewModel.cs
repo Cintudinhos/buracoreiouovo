@@ -9,7 +9,8 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace App.ViewModels;
 
-public partial class ConfigViewModel(IPreferencesRepository preferencesRepository)
+public partial class ConfigViewModel(IPreferencesRepository preferencesRepository,
+                                     IStateRepository stateRepository)
     : ObservableObject
 {
     [ObservableProperty]
@@ -22,6 +23,7 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
     private string? _password;
 
     private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
+    private readonly IStateRepository _stateRepository = stateRepository;
 
     public async Task InitializeAsync()
     {
@@ -47,11 +49,17 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
         AppPreferences appPreferences = new()
         {
             Email = Email,
-            IsConfigured = true,
             Password = Password,
         };
 
         await _preferencesRepository.SavePreferencesAsync(appPreferences);
+
+        AppState appState = new()
+        {
+            IsConfigured = true,
+        };
+
+        _stateRepository.SaveState(appState);
 
         await Shell.Current.GoToAsync($"//{nameof(CrownEggPage)}");
     }

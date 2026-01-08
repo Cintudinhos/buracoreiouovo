@@ -1,6 +1,8 @@
 ﻿#pragma warning disable MVVMTK0045
 
 using System.Collections.ObjectModel;
+using App.Core.Models;
+using App.Infrastructure.Repositories;
 using App.Pages;
 using App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,16 +10,11 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace App.ViewModels;
 
-public partial class CrownEggViewModel(ICrownEggService crownEggService)
+public partial class CrownEggViewModel(IAuthService authService,
+                                       ICrownEggService crownEggService,
+                                       IPreferencesRepository preferencesRepository)
     : ObservableObject
 {
-    public record class CrownEggItem
-    (
-        Color BackgroundColor,
-        int Quantity,
-        string PlayerName
-    );
-
     [ObservableProperty]
     private ObservableCollection<CrownEggItem> _crowns = [];
 
@@ -30,47 +27,42 @@ public partial class CrownEggViewModel(ICrownEggService crownEggService)
     [ObservableProperty]
     private int _selectedYear;
 
+    public record class CrownEggItem
+    (
+        Color BackgroundColor,
+        int Quantity,
+        string PlayerName
+    );
+
+    public event Action<string>? ErrorOccurred;
+
+    private readonly IAuthService _authService = authService;
     private readonly ICrownEggService _crownEggService = crownEggService;
+    private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
+
     private bool _isInitialized;
 
     public async Task InitializeAsync()
     {
         if (!_isInitialized)
         {
-            _crownEggService.GetCrownEggEntriesAsync();
+            bool isAuthServiceInitialized = await _authService.InitializeAsync();
 
+            if (!isAuthServiceInitialized)
+            {
+                AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+                string email = appPreferences.Email ?? string.Empty;
+                string password = appPreferences.Password ?? string.Empty;
 
-            //CrownEggEntry[] crownEntries =
-            //[
-            //    new CrownEggEntry(CrownOrEgg.Crown, 3, "Player 1"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 1, "Player 2"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 2, "Player 3"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 7, "Player 4"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 2, "Player 5"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 4, "Player 6"),
-            //    new CrownEggEntry(CrownOrEgg.Crown, 5, "Player 7"),
-            //];
+                bool loginSuccess = await _authService.LoginAsync(email, password);
 
-            //foreach (CrownEggEntry? crownEntry in crownEntries.OrderByDescending(entry => entry.Quantity))
-            //{
-            //    Crowns.Add(crownEntry);
-            //}
+                if (!loginSuccess)
+                {
+                    ErrorOccurred?.Invoke("Não foi possível fazer login");
 
-            //CrownEggEntry[] eggEntries =
-            //[
-            //    new CrownEggEntry(CrownOrEgg.Egg, 4, "Player 1"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 5, "Player 2"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 2, "Player 3"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 1, "Player 4"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 3, "Player 5"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 6, "Player 6"),
-            //    new CrownEggEntry(CrownOrEgg.Egg, 7, "Player 7"),
-            //];
-
-            //foreach (CrownEggEntry? eggEntry in eggEntries.OrderByDescending(entry => entry.Quantity))
-            //{
-            //    Eggs.Add(eggEntry);
-            //}
+                    return;
+                }
+            }
 
             Years = [2026];
             SelectedYear = 2026;

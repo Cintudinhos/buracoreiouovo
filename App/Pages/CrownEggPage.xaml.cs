@@ -9,6 +9,7 @@ public partial class CrownEggPage : ContentPage
         InitializeComponent();
 
         BindingContext = viewModel;
+        viewModel.ErrorOccurred += CrownEggViewModel_ErrorOccurred;
     }
 
     protected override void OnAppearing()
@@ -22,5 +23,12 @@ public partial class CrownEggPage : ContentPage
         });
 
         base.OnAppearing();
+    }
+
+    private async void CrownEggViewModel_ErrorOccurred(string message)
+    {
+        await DisplayAlertAsync("Crown Egg Error",
+                                message,
+                                "Ok");
     }
 }

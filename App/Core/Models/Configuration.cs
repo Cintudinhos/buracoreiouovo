@@ -9,4 +9,6 @@ public class Configuration
 public class BaseAddressConfiguration
 {
     public required string Auth { get; init; }
+    public required string Login { get; init; }
+    public required string Firestore { get; init; }
 }

@@ -6,13 +6,13 @@ namespace App;
 
 public partial class AppShell : Shell
 {
-    private readonly IPreferencesRepository _preferencesRepository;
+    private readonly IStateRepository _stateRepository;
 
-    public AppShell(IPreferencesRepository preferencesRepository)
+    public AppShell(IStateRepository stateRepository)
     {
         InitializeComponent();
 
-        _preferencesRepository = preferencesRepository;
+        _stateRepository = stateRepository;
     }
 
 
@@ -22,9 +22,9 @@ public partial class AppShell : Shell
 
         Dispatcher.Dispatch(async () =>
         {
-            AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+            AppState appState = _stateRepository.GetState();
 
-            if (!appPreferences.IsConfigured)
+            if (!appState.IsConfigured)
             {
                 Page? crownEggPage = Application.Current?.Windows[0].Page;
 
