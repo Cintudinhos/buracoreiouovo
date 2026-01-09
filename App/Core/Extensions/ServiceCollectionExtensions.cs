@@ -42,6 +42,7 @@ internal static class ServiceCollectionExtensions
             services.AddSingleton<AuthenticationHandler>();
 
             // pages
+            services.AddTransient<AddUpdateCrownEggPage>();
             services.AddTransient<AppShell>();
             services.AddTransient<ConfigPage>();
             services.AddTransient<CrownEggPage>();
@@ -57,6 +58,7 @@ internal static class ServiceCollectionExtensions
             services.AddSingleton<ICrownEggService, CrownEggService>();
 
             // viewmodels
+            services.AddTransient<AddUpdateCrownEggViewModel>();
             services.AddTransient<ConfigViewModel>();
             services.AddTransient<CrownEggViewModel>();
             services.AddTransient<CrownEggListViewModel>();

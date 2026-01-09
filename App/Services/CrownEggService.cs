@@ -7,8 +7,9 @@ namespace App.Services;
 
 public interface ICrownEggService
 {
-    Task<CrownEgg[]> GetCrownEggEntriesAsync(int year);
-    Task<CrownEgg[]> RefreshCrownEggEntriesAsync(int year);
+    Task CreateCrownEggAsync(CrownEgg crownEgg, string collectionId);
+    Task<CrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId);
+    Task<CrownEgg[]> RefreshCrownEggEntriesAsync(int year, string collectionId);
 }
 
 public class CrownEggService(IFirestoreClient firestoreClient)
@@ -18,41 +19,67 @@ public class CrownEggService(IFirestoreClient firestoreClient)
 
     private CrownEgg[]? _crownEggs;
     private int _year;
+    private string? _collectionId;
 
-    public async Task<CrownEgg[]> GetCrownEggEntriesAsync(int year)
+    public async Task CreateCrownEggAsync(CrownEgg crownEgg, string collectionId)
     {
-        if (_crownEggs is not null && _year == year)
+        CrownEggDocument crownEggDocument = new()
+        {
+            Fields = new CrownEggDocumentFields
+            {
+                PlayerName = new FirestoreString { StringValue = crownEgg.PlayerName },
+                Timestamp = new FirestoreTimestamp { TimestampValue = crownEgg.Timestamp },
+                Type = new FirestoreString { StringValue = crownEgg.Type.ToString() },
+                Year = new FirestoreInteger { IntegerValue = crownEgg.Timestamp.Year },
+            },
+        };
+
+        bool isSuccess = await _firestoreClient.PostCrownEggEntryAsync(crownEggDocument, collectionId);
+
+        if (isSuccess)
+        {
+            await UpdateCrownEggsAsync(_year, collectionId);
+        }
+    }
+
+    public async Task<CrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId)
+    {
+        if (_crownEggs is not null && _year == year && _collectionId == collectionId)
         {
             return _crownEggs;
         }
 
-        await UpdateCrownEggsAsync(year);
+        await UpdateCrownEggsAsync(year, collectionId);
 
         return _crownEggs ?? [];
     }
 
-    public async Task<CrownEgg[]> RefreshCrownEggEntriesAsync(int year)
+    public async Task<CrownEgg[]> RefreshCrownEggEntriesAsync(int year, string collectionId)
     {
-        await UpdateCrownEggsAsync(year);
+        await UpdateCrownEggsAsync(year, collectionId);
 
         return _crownEggs ?? [];
     }
 
-    private async Task UpdateCrownEggsAsync(int year)
+    private async Task UpdateCrownEggsAsync(int year, string collectionId)
     {
-        FirestoreCrownEgg[] firestoreCrownEggs = await _firestoreClient.GetCrownEggEntriesAsync(year);
+        FirestoreCrownEgg[] firestoreCrownEggs = await _firestoreClient.GetCrownEggEntriesAsync(year, collectionId);
 
         _crownEggs =
         [
             ..
-            firestoreCrownEggs.Select(firestoreCrownEgg => new CrownEgg
-            (
-                PlayerName: firestoreCrownEgg.Document.Fields.PlayerName.StringValue,
-                Timestamp: firestoreCrownEgg.Document.Fields.Timestamp.TimestampValue,
-                Type: Enum.Parse<CrownOrEgg>(firestoreCrownEgg.Document.Fields.Type.StringValue, true)
-            )),
+            firestoreCrownEggs
+                .Where(firestoreCrownEgg => firestoreCrownEgg.Document is not null)
+                .Select(firestoreCrownEgg => new CrownEgg
+                (
+                    Id: firestoreCrownEgg.Document!.Id,
+                    PlayerName: firestoreCrownEgg.Document.Fields.PlayerName.StringValue,
+                    Timestamp: firestoreCrownEgg.Document.Fields.Timestamp.TimestampValue,
+                    Type: Enum.Parse<CrownOrEgg>(firestoreCrownEgg.Document.Fields.Type.StringValue, true)
+                )),
         ];
 
         _year = year;
+        _collectionId = collectionId;
     }
 }

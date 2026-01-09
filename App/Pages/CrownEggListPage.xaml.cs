@@ -23,4 +23,17 @@ public partial class CrownEggListPage : ContentPage
 
         base.OnAppearing();
     }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            if (BindingContext is CrownEggListViewModel viewModel)
+            {
+                await viewModel.NavigatedAsync();
+            }
+        });
+
+        base.OnNavigatedTo(args);
+    }
 }

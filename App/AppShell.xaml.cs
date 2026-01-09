@@ -13,6 +13,8 @@ public partial class AppShell : Shell
         InitializeComponent();
 
         _stateRepository = stateRepository;
+
+        Routing.RegisterRoute(nameof(AddUpdateCrownEggPage), typeof(AddUpdateCrownEggPage));
     }
 
 
@@ -31,7 +33,7 @@ public partial class AppShell : Shell
                 if (crownEggPage is not null)
                 {
                     await crownEggPage.DisplayAlertAsync("Aplicativo não configurado",
-                                                         "O aplicativo 'Buraco Rei ou Ovo' ainda não está corretamente configurado",
+                                                         "O aplicativo 'Buraco: Rei ou Ovo' ainda não está corretamente configurado",
                                                          "Ir para configurações");
                 }
 

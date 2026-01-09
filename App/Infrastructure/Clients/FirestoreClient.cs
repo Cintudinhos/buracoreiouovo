@@ -6,7 +6,8 @@ namespace App.Infrastructure.Clients;
 
 public interface IFirestoreClient
 {
-    Task<FirestoreCrownEgg[]> GetCrownEggEntriesAsync(int year);
+    Task<FirestoreCrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId);
+    Task<bool> PostCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId);
 }
 
 public class FirestoreClient(HttpClient httpClient)
@@ -16,7 +17,7 @@ public class FirestoreClient(HttpClient httpClient)
 
     private readonly HttpClient _httpClient = httpClient;
 
-    public async Task<FirestoreCrownEgg[]> GetCrownEggEntriesAsync(int year)
+    public async Task<FirestoreCrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId)
     {
         string requestUri = $"{BaseUrlV1}:runQuery";
 
@@ -25,7 +26,7 @@ public class FirestoreClient(HttpClient httpClient)
             {
               "structuredQuery": {
                 "from": [
-                  { "collectionId": "crown-egg" }
+                  { "collectionId": "crown-egg-{{collectionId}}" }
                 ],
                 "where": {
                   "fieldFilter": {
@@ -45,14 +46,35 @@ public class FirestoreClient(HttpClient httpClient)
 
         using HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-        if (!response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            return [];
+            try
+            {
+                FirestoreCrownEgg[]? firestoreCrownEggResponse =
+                    await response.Content.ReadFromJsonAsync<FirestoreCrownEgg[]>();
+
+                return firestoreCrownEggResponse ?? [];
+            }
+            catch
+            {
+                // do nothing
+            }
         }
 
-        FirestoreCrownEgg[]? firestoreCrownEggResponse =
-            await response.Content.ReadFromJsonAsync<FirestoreCrownEgg[]>();
+        return [];
+    }
 
-        return firestoreCrownEggResponse ?? [];
+    public async Task<bool> PostCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId)
+    {
+        string requestUri = $"{BaseUrlV1}/crown-egg-{collectionId}";
+
+        using HttpRequestMessage request = new(HttpMethod.Post, requestUri)
+        {
+            Content = JsonContent.Create(crownEggDocument),
+        };
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+        return response.IsSuccessStatusCode;
     }
 }

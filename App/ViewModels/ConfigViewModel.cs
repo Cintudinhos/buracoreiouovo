@@ -17,6 +17,9 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
     private bool _canSave;
 
     [ObservableProperty]
+    private string? _collectionId;
+
+    [ObservableProperty]
     private string? _email;
 
     [ObservableProperty]
@@ -29,8 +32,14 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
     {
         AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
 
+        CollectionId = appPreferences.CollectionId;
         Email = appPreferences.Email;
         Password = appPreferences.Password;
+    }
+
+    partial void OnCollectionIdChanged(string? value)
+    {
+        CanSave = ValidateInputs();
     }
 
     partial void OnEmailChanged(string? value)
@@ -48,6 +57,7 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
     {
         AppPreferences appPreferences = new()
         {
+            CollectionId = CollectionId,
             Email = Email,
             Password = Password,
         };
@@ -66,9 +76,10 @@ public partial class ConfigViewModel(IPreferencesRepository preferencesRepositor
 
     private bool ValidateInputs()
     {
+        bool isValidCollectionId = CollectionId?.Length >= 3 && !CollectionId.Contains(' ');
         bool isValidEmail = MailAddress.TryCreate(Email, out _);
         bool isValidPassword = Password?.Length >= 5;
 
-        return isValidEmail && isValidPassword;
+        return isValidCollectionId && isValidEmail && isValidPassword;
     }
 }

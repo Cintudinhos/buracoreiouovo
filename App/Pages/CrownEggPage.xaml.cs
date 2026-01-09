@@ -25,6 +25,19 @@ public partial class CrownEggPage : ContentPage
         base.OnAppearing();
     }
 
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            if (BindingContext is CrownEggViewModel viewModel)
+            {
+                await viewModel.NavigatedAsync();
+            }
+        });
+
+        base.OnNavigatedTo(args);
+    }
+
     private async void CrownEggViewModel_ErrorOccurred(string message)
     {
         await DisplayAlertAsync("Crown Egg Error",

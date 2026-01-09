@@ -4,12 +4,21 @@ namespace App.Core.Models.Clients;
 
 public class FirestoreCrownEgg
 {
-    public required CrownEggDocument Document { get; set; }
+    public CrownEggDocument? Document { get; set; }
 }
 
 public class CrownEggDocument
 {
     public required CrownEggDocumentFields Fields { get; set; }
+    public string Name { get; set; }
+
+    [JsonIgnore]
+    public string Id => Name[(Name.LastIndexOf('/') + 1)..];
+
+    public CrownEggDocument()
+    {
+        Name = string.Empty;
+    }
 }
 
 public class CrownEggDocumentFields

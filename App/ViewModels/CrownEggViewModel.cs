@@ -84,6 +84,17 @@ public partial class CrownEggViewModel(IAuthService authService,
         _isInitialized = true;
     }
 
+    public async Task NavigatedAsync()
+    {
+        await PopulateCrownsAndEggsAsync();
+    }
+
+    [RelayCommand]
+    private async Task GoToAddCrownEggPage()
+    {
+        await Shell.Current.GoToAsync(nameof(AddUpdateCrownEggPage));
+    }
+
     [RelayCommand]
     private async Task GoToConfigPage()
     {
@@ -100,7 +111,10 @@ public partial class CrownEggViewModel(IAuthService authService,
         Crowns.Clear();
         Eggs.Clear();
 
-        CrownEgg[] crownEggs = await _crownEggService.GetCrownEggEntriesAsync(SelectedYear);
+        AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+
+        CrownEgg[] crownEggs =
+            await _crownEggService.GetCrownEggEntriesAsync(SelectedYear, appPreferences.CollectionId ?? "DEFAULT");
 
         var groupedCrownEggs = crownEggs
             .GroupBy(static crownEgg => new
@@ -154,7 +168,9 @@ public partial class CrownEggViewModel(IAuthService authService,
     [RelayCommand]
     private async Task Refresh()
     {
-        await _crownEggService.RefreshCrownEggEntriesAsync(SelectedYear);
+        AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+
+        await _crownEggService.RefreshCrownEggEntriesAsync(SelectedYear, appPreferences.CollectionId ?? "DEFAULT");
 
         await PopulateCrownsAndEggsAsync();
 

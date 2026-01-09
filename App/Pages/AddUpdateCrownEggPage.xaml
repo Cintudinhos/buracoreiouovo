@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:viewmodels="clr-namespace:App.ViewModels"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App.Pages.AddUpdateCrownEggPage"
+             x:DataType="viewmodels:AddUpdateCrownEggViewModel"
+             Title="{Binding AddOrUpdate}">
+
+    <Grid ColumnSpacing="10"
+          Margin="10"
+          RowSpacing="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0"
+                Grid.Row="0"
+                Padding="10">
+
+            <Grid ColumnSpacing="10"
+                  RowSpacing="10">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0"
+                       Grid.Row="0"
+                       Margin="0,0,10,0"
+                       VerticalOptions="Center"
+                       Text="Nome" />
+
+                <Entry Grid.Column="1"
+                       Grid.Row="0"
+                       Placeholder="nome"
+                       VerticalOptions="Center"
+                       Text="{Binding PlayerName}" />
+
+                <Label Grid.Column="0"
+                       Grid.Row="1"
+                       Margin="0,0,10,0"
+                       VerticalOptions="Center"
+                       Text="Rei ou Ovo" />
+
+                <Picker Grid.Column="1"
+                        Grid.Row="1"
+                        ItemsSource="{Binding CrownOrEggs}"
+                        Margin="5,0,0,0"
+                        SelectedItem="{Binding SelectedCrownOrEgg}"
+                        VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <Button Grid.Column="0"
+                Grid.Row="1"
+                VerticalOptions="End"
+                Command="{Binding SaveCrownOrEggCommand}"
+                Text="Save" />
+    </Grid>
+
+</ContentPage>

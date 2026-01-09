@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using App.Core.Models;
+using App.Infrastructure.Repositories;
 using App.Pages;
 using App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -17,7 +18,8 @@ public record class CrownEggListItem
     string PlayerName
 );
 
-public partial class CrownEggListViewModel(ICrownEggService crownEggService)
+public partial class CrownEggListViewModel(ICrownEggService crownEggService,
+                                           IPreferencesRepository preferencesRepository)
     : ObservableObject
 {
     [ObservableProperty]
@@ -33,6 +35,7 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService)
     private int _selectedYear;
 
     private readonly ICrownEggService _crownEggService = crownEggService;
+    private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
 
     private bool _isInitialized;
 
@@ -45,6 +48,17 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService)
         }
 
         _isInitialized = true;
+    }
+
+    public async Task NavigatedAsync()
+    {
+        await PopulateCrownEggsListAsync();
+    }
+
+    [RelayCommand]
+    private async Task GoToAddCrownEggPage()
+    {
+        await Shell.Current.GoToAsync(nameof(AddUpdateCrownEggPage));
     }
 
     [RelayCommand]
@@ -62,7 +76,10 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService)
     {
         CrownEggsList.Clear();
 
-        CrownEgg[] crownEggs = await _crownEggService.GetCrownEggEntriesAsync(SelectedYear);
+        AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+
+        CrownEgg[] crownEggs =
+            await _crownEggService.GetCrownEggEntriesAsync(SelectedYear, appPreferences.CollectionId ?? "DEFAULT");
 
         Color _backgroundColor1 = Color.FromArgb("fffefefe");
         Color _backgroundColor2 = Color.FromArgb("ffefefef");
@@ -88,7 +105,9 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService)
     [RelayCommand]
     private async Task Refresh()
     {
-        await _crownEggService.RefreshCrownEggEntriesAsync(SelectedYear);
+        AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
+
+        await _crownEggService.RefreshCrownEggEntriesAsync(SelectedYear, appPreferences.CollectionId ?? "DEFAULT");
 
         await PopulateCrownEggsListAsync();
 

@@ -7,7 +7,7 @@
              Title="Todos Reis e Ovos">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoToConfigPageCommand}"
+        <ToolbarItem Command="{Binding GoToAddCrownEggPageCommand}"
                      IconImageSource="add.png"
                      Order="Primary"
                      Priority="0"
