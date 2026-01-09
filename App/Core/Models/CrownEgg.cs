@@ -2,7 +2,7 @@
 
 namespace App.Core.Models;
 
-public record class CrownEggEntry
+public record class CrownEgg
 (
     DateTime Timestamp,
     CrownOrEgg Type,

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:viewmodels="clr-namespace:App.ViewModels"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App.Pages.CrownEggListPage"
+             x:DataType="viewmodels:CrownEggListViewModel"
              Title="Todos Reis e Ovos">
 
     <ContentPage.ToolbarItems>
@@ -12,11 +14,83 @@
                      Text="Adicionar" />
     </ContentPage.ToolbarItems>
 
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <Grid ColumnSpacing="10"
+                  Margin="10"
+                  RowSpacing="10">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <HorizontalStackLayout Grid.Column="0"
+                                       Grid.Row="0"
+                                       Margin="10,0">
+
+                    <Label Margin="0,0,5,0"
+                           VerticalOptions="Center"
+                           Text="Ano:" />
+
+                    <Picker ItemsSource="{Binding Years}"
+                            Margin="5,0,0,0"
+                            SelectedItem="{Binding SelectedYear}"
+                            VerticalOptions="Center" />
+                </HorizontalStackLayout>
+
+                <Border Grid.Column="0"
+                        Grid.Row="1">
+
+                    <ScrollView >
+                        <CollectionView ItemsSource="{Binding CrownEggsList}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:CrownEggListItem">
+                                    <Grid BackgroundColor="{Binding BackgroundColor}"
+                                          ColumnSpacing="10"
+                                          Padding="10">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Image Grid.Column="0"
+                                               Grid.Row="0"
+                                               Source="{Binding Image}"
+                                               HeightRequest="30"
+                                               WidthRequest="30" />
+
+                                        <Label FontAttributes="Bold"
+                                               FontSize="17"
+                                               Grid.Column="1"
+                                               Grid.Row="0"
+                                               VerticalTextAlignment="Center"
+                                               Text="{Binding PlayerName}" />
+
+                                        <Label FontSize="17"
+                                               Grid.Column="2"
+                                               Grid.Row="0"
+                                               VerticalTextAlignment="Center"
+                                               Text="{Binding Timestamp, StringFormat='{0:dd/MM/yyyy}'}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </RefreshView>
 
 </ContentPage>

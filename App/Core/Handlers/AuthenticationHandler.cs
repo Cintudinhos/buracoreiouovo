@@ -14,12 +14,12 @@ public partial class AuthenticationHandler(IAuthService authService)
         CancellationToken cancellationToken
     )
     {
-        if (_authService.Expiration > DateTime.UtcNow)
+        if (_authService.Expiration < DateTime.UtcNow)
         {
             await _authService.RefreshAsync();
         }
 
-        request.Headers.Authorization = new AuthenticationHeaderValue("bearer", _authService.IdToken);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _authService.IdToken);
 
         return await base.SendAsync(request, cancellationToken);
     }

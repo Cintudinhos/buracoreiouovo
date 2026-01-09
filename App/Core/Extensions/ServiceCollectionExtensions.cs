@@ -38,6 +38,9 @@ internal static class ServiceCollectionExtensions
 
         public IServiceCollection AddAppServices()
         {
+            // handlers
+            services.AddSingleton<AuthenticationHandler>();
+
             // pages
             services.AddTransient<AppShell>();
             services.AddTransient<ConfigPage>();

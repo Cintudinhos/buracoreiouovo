@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:models="clr-namespace:App.Core.Models"
              xmlns:viewmodels="clr-namespace:App.ViewModels"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App.Pages.CrownEggPage"
@@ -21,114 +20,117 @@
                      Text="Configurações" />
     </ContentPage.ToolbarItems>
 
-    <Grid ColumnSpacing="10"
-          Margin="10"
-          RowSpacing="10">
+    <RefreshView Command="{Binding RefreshCommand}"
+                 IsRefreshing="{Binding IsRefreshing}">
+        <ScrollView>
+            <Grid ColumnSpacing="10"
+                  Margin="10"
+                  RowSpacing="10">
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-        <HorizontalStackLayout Grid.Column="0"
-                               Grid.Row="0"
-                               Margin="10,0">
+                <HorizontalStackLayout Grid.Column="0"
+                                       Grid.Row="0"
+                                       Margin="10,0">
 
-            <Label Margin="0,0,5,0"
-                   VerticalOptions="Center"
-                   Text="Ano:" />
+                    <Label Margin="0,0,5,0"
+                           VerticalOptions="Center"
+                           Text="Ano:" />
 
-            <Picker ItemsSource="{Binding Years}"
-                    Margin="5,0,0,0"
-                    SelectedItem="{Binding SelectedYear}"
-                    VerticalOptions="Center" />
-        </HorizontalStackLayout>
+                    <Picker ItemsSource="{Binding Years}"
+                            Margin="5,0,0,0"
+                            SelectedItem="{Binding SelectedYear}"
+                            VerticalOptions="Center" />
+                </HorizontalStackLayout>
 
-        <Border Grid.Column="0"
-                Grid.Row="1">
-            <ScrollView>
-                <VerticalStackLayout>
-                    <Image Source="crown.png"
-                           HeightRequest="100"
-                           WidthRequest="100" />
+                <Border Grid.Column="0"
+                        Grid.Row="1">
+                    <VerticalStackLayout>
+                        <Image Source="crown.png"
+                               HeightRequest="100"
+                               WidthRequest="100" />
 
-                    <CollectionView ItemsSource="{Binding Crowns}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:CrownEggEntry">
-                                <Grid Margin="10,5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                        <CollectionView ItemsSource="{Binding Crowns}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:CrownEggItem">
+                                    <Grid BackgroundColor="{Binding BackgroundColor}"
+                                          Margin="10,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <Label FontAttributes="Bold"
-                                            FontSize="20"
-                                            Grid.Column="0"
-                                            Grid.Row="0"
-                                            Text="{Binding Name}" />
+                                        <Label FontAttributes="Bold"
+                                               FontSize="20"
+                                               Grid.Column="0"
+                                               Grid.Row="0"
+                                               Text="{Binding PlayerName}" />
 
-                                    <Label FontAttributes="Bold"
-                                            FontSize="20"
-                                            Grid.Column="1"
-                                            Grid.Row="0"
-                                            Text="{Binding Quantity}" />
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
+                                        <Label FontAttributes="Bold"
+                                               FontSize="20"
+                                               Grid.Column="1"
+                                               Grid.Row="0"
+                                               Text="{Binding Quantity}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
 
-        <Border Grid.Column="0"
-                Grid.Row="2">
+                <Border Grid.Column="0"
+                        Grid.Row="2">
 
-            <ScrollView>
-                <VerticalStackLayout>
-                    <Image Source="egg.png"
-                           HeightRequest="100"
-                           WidthRequest="100" />
+                    <VerticalStackLayout>
+                        <Image Source="egg.png"
+                               HeightRequest="100"
+                               WidthRequest="100" />
 
-                    <CollectionView ItemsSource="{Binding Eggs}">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:CrownEggEntry">
-                                <Grid Margin="10,5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                        <CollectionView ItemsSource="{Binding Eggs}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:CrownEggItem">
+                                    <Grid BackgroundColor="{Binding BackgroundColor}"
+                                          Margin="10,5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <Label FontAttributes="Bold"
-                                            FontSize="20"
-                                            Grid.Column="0"
-                                            Grid.Row="0"
-                                            Text="{Binding Name}" />
+                                        <Label FontAttributes="Bold"
+                                               FontSize="20"
+                                               Grid.Column="0"
+                                               Grid.Row="0"
+                                               Text="{Binding PlayerName}" />
 
-                                    <Label FontAttributes="Bold"
-                                            FontSize="20"
-                                            Grid.Column="1"
-                                            Grid.Row="0"
-                                            Text="{Binding Quantity}" />
-                                </Grid>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </Grid>
+                                        <Label FontAttributes="Bold"
+                                               FontSize="20"
+                                               Grid.Column="1"
+                                               Grid.Row="0"
+                                               Text="{Binding Quantity}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </RefreshView>
 
 </ContentPage>
