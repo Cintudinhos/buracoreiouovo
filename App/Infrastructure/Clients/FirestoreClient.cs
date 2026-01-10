@@ -7,6 +7,7 @@ namespace App.Infrastructure.Clients;
 public interface IFirestoreClient
 {
     Task<FirestoreCrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId);
+    Task<bool> PatchCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId, string id);
     Task<bool> PostCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId);
 }
 
@@ -62,6 +63,20 @@ public class FirestoreClient(HttpClient httpClient)
         }
 
         return [];
+    }
+
+    public async Task<bool> PatchCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId, string id)
+    {
+        string requestUri = $"{BaseUrlV1}/crown-egg-{collectionId}/{id}";
+
+        using HttpRequestMessage request = new(HttpMethod.Patch, requestUri)
+        {
+            Content = JsonContent.Create(crownEggDocument),
+        };
+
+        using HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> PostCrownEggEntryAsync(CrownEggDocument crownEggDocument, string collectionId)

@@ -8,8 +8,10 @@ namespace App.Services;
 public interface ICrownEggService
 {
     Task CreateCrownEggAsync(CrownEgg crownEgg, string collectionId);
+    CrownEgg GetCrownEgg(string id);
     Task<CrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId);
     Task<CrownEgg[]> RefreshCrownEggEntriesAsync(int year, string collectionId);
+    Task UpdateCrownEggAsync(CrownEgg crownEgg, string collectionId);
 }
 
 public class CrownEggService(IFirestoreClient firestoreClient)
@@ -42,6 +44,13 @@ public class CrownEggService(IFirestoreClient firestoreClient)
         }
     }
 
+    public CrownEgg GetCrownEgg(string id)
+    {
+        CrownEgg crownEgg = _crownEggs!.First(crownEgg => crownEgg.Id == id);
+
+        return crownEgg;
+    }
+
     public async Task<CrownEgg[]> GetCrownEggEntriesAsync(int year, string collectionId)
     {
         if (_crownEggs is not null && _year == year && _collectionId == collectionId)
@@ -59,6 +68,27 @@ public class CrownEggService(IFirestoreClient firestoreClient)
         await UpdateCrownEggsAsync(year, collectionId);
 
         return _crownEggs ?? [];
+    }
+
+    public async Task UpdateCrownEggAsync(CrownEgg crownEgg, string collectionId)
+    {
+        CrownEggDocument crownEggDocument = new()
+        {
+            Fields = new CrownEggDocumentFields
+            {
+                PlayerName = new FirestoreString { StringValue = crownEgg.PlayerName },
+                Timestamp = new FirestoreTimestamp { TimestampValue = crownEgg.Timestamp },
+                Type = new FirestoreString { StringValue = crownEgg.Type.ToString() },
+                Year = new FirestoreInteger { IntegerValue = crownEgg.Timestamp.Year },
+            },
+        };
+
+        bool isSuccess = await _firestoreClient.PatchCrownEggEntryAsync(crownEggDocument, collectionId, crownEgg.Id!);
+
+        if (isSuccess)
+        {
+            await UpdateCrownEggsAsync(_year, collectionId);
+        }
     }
 
     private async Task UpdateCrownEggsAsync(int year, string collectionId)

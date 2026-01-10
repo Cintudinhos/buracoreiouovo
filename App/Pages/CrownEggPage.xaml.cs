@@ -27,13 +27,16 @@ public partial class CrownEggPage : ContentPage
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        Dispatcher.Dispatch(async () =>
+        if (args.PreviousPage?.BindingContext is AddUpdateCrownEggViewModel)
         {
-            if (BindingContext is CrownEggViewModel viewModel)
+            Dispatcher.Dispatch(async () =>
             {
-                await viewModel.NavigatedAsync();
-            }
-        });
+                if (BindingContext is CrownEggViewModel viewModel)
+                {
+                    await viewModel.NavigatedAsync();
+                }
+            });
+        }
 
         base.OnNavigatedTo(args);
     }

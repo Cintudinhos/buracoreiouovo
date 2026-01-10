@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using App.Core.Enums;
 using App.Core.Models;
 using App.Infrastructure.Repositories;
-using App.Pages;
 using App.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,13 +18,13 @@ public partial class AddUpdateCrownEggViewModel(ICrownEggService crownEggService
     private ObservableCollection<string> _crownOrEggs = [];
 
     [ObservableProperty]
-    private string? _selectedCrownOrEgg;
-
-    [ObservableProperty]
     private string? _addOrUpdate;
 
     [ObservableProperty]
     private string? _playerName;
+
+    [ObservableProperty]
+    private string? _selectedCrownOrEgg;
 
     private readonly ICrownEggService _crownEggService = crownEggService;
     private readonly IPreferencesRepository _preferencesRepository = preferencesRepository;
@@ -36,13 +35,16 @@ public partial class AddUpdateCrownEggViewModel(ICrownEggService crownEggService
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        _isUpdate = query.TryGetValue("isUpdate", out object? isUpdateValue) && (bool)isUpdateValue;
+        _isUpdate = query.TryGetValue("IsUpdate", out object? isUpdateValue) && (bool)isUpdateValue;
 
         if (_isUpdate)
         {
             _crownEgg = query["CrownEgg"] as CrownEgg;
 
             AddOrUpdate = "Atualizar Rei ou Ovo";
+
+            PlayerName = _crownEgg!.PlayerName;
+            SelectedCrownOrEgg = GetCrownOrEggString(_crownEgg!.Type);
         }
         else
         {
@@ -61,7 +63,7 @@ public partial class AddUpdateCrownEggViewModel(ICrownEggService crownEggService
                 CrownOrEggs.Add(crownOrEggString);
             }
 
-            SelectedCrownOrEgg = GetCrownOrEggString(CrownOrEgg.Crown);
+            SelectedCrownOrEgg ??= GetCrownOrEggString(CrownOrEgg.Crown);
         }
 
         _isInitialized = true;
@@ -72,15 +74,21 @@ public partial class AddUpdateCrownEggViewModel(ICrownEggService crownEggService
     {
         AppPreferences appPreferences = await _preferencesRepository.GetPreferencesAsync();
 
-        CrownEgg crownEgg = _isUpdate
-            ? new
+        if (_isUpdate)
+        {
+            CrownEgg crownEgg = new
             (
                 Id: _crownEgg?.Id,
                 PlayerName: PlayerName ?? "NO NAME",
                 Timestamp: _crownEgg?.Timestamp ?? DateTime.UtcNow,
                 Type: GetCrownOrEggEnum(SelectedCrownOrEgg ?? "Rei")
-            )
-            : new
+            );
+
+            await _crownEggService.UpdateCrownEggAsync(crownEgg, appPreferences?.CollectionId ?? "DEFAULT");
+        }
+        else
+        {
+            CrownEgg crownEgg = new
             (
                 Id: null,
                 PlayerName: PlayerName ?? "NO NAME",
@@ -88,7 +96,8 @@ public partial class AddUpdateCrownEggViewModel(ICrownEggService crownEggService
                 Type: GetCrownOrEggEnum(SelectedCrownOrEgg ?? "Rei")
             );
 
-        await _crownEggService.CreateCrownEggAsync(crownEgg, appPreferences?.CollectionId ?? "DEFAULT");
+            await _crownEggService.CreateCrownEggAsync(crownEgg, appPreferences?.CollectionId ?? "DEFAULT");
+        }
 
         await Shell.Current.GoToAsync("..");
     }

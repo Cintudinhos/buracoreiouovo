@@ -14,6 +14,7 @@ public record class CrownEggListItem
 (
     Color BackgroundColor,
     DateTime Timestamp,
+    string Id,
     string Image,
     string PlayerName
 );
@@ -67,6 +68,20 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService,
         await Shell.Current.GoToAsync($"//{nameof(ConfigPage)}");
     }
 
+    [RelayCommand]
+    private async Task DoubleTap(string id)
+    {
+        CrownEgg crownEgg = _crownEggService.GetCrownEgg(id);
+
+        Dictionary<string, object> parameters = new()
+        {
+            { "CrownEgg", crownEgg },
+            { "IsUpdate", true },
+        };
+
+        await Shell.Current.GoToAsync(nameof(AddUpdateCrownEggPage), parameters);
+    }
+
     partial void OnSelectedYearChanged(int value)
     {
         _ = PopulateCrownEggsListAsync();
@@ -93,6 +108,7 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService,
             CrownEggListItem crownEggListItem = new
             (
                 BackgroundColor: crownEggBackgroundColor++ % 2 == 0 ? _backgroundColor1 : _backgroundColor2,
+                Id: crownEgg.Id ?? string.Empty,
                 Image: image,
                 PlayerName: crownEgg.PlayerName,
                 Timestamp: crownEgg.Timestamp
