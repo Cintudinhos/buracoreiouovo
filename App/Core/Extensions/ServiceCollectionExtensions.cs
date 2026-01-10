@@ -1,7 +1,7 @@
-﻿#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+﻿#pragma warning disable S1075 // URIs should not be hardcoded
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
 
 using App.Core.Handlers;
-using App.Core.Models;
 using App.Infrastructure.Clients;
 using App.Infrastructure.Repositories;
 using App.Pages;
@@ -14,21 +14,21 @@ internal static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddAppClients(Configuration configuration)
+        public IServiceCollection AddAppClients()
         {
             services.AddHttpClient<IAuthClient, AuthClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration.BaseAddress.Auth);
+                client.BaseAddress = new Uri("https://securetoken.googleapis.com/");
             });
 
             services.AddHttpClient<ILoginClient, LoginClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration.BaseAddress.Login);
+                client.BaseAddress = new Uri("https://identitytoolkit.googleapis.com/");
             });
 
             IHttpClientBuilder firestoreClientBuilder = services.AddHttpClient<IFirestoreClient, FirestoreClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration.BaseAddress.Firestore);
+                client.BaseAddress = new Uri("https://firestore.googleapis.com");
             });
 
             firestoreClientBuilder.AddHttpMessageHandler<AuthenticationHandler>();

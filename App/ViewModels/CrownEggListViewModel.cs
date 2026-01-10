@@ -12,7 +12,6 @@ namespace App.ViewModels;
 
 public record class CrownEggListItem
 (
-    Color BackgroundColor,
     DateTime Timestamp,
     string Id,
     string Image,
@@ -96,18 +95,12 @@ public partial class CrownEggListViewModel(ICrownEggService crownEggService,
         CrownEgg[] crownEggs =
             await _crownEggService.GetCrownEggEntriesAsync(SelectedYear, appPreferences.CollectionId ?? "DEFAULT");
 
-        Color _backgroundColor1 = Color.FromArgb("fffefefe");
-        Color _backgroundColor2 = Color.FromArgb("ffefefef");
-
-        int crownEggBackgroundColor = 0;
-
         foreach (CrownEgg crownEgg in crownEggs.OrderByDescending(crownEgg => crownEgg.Timestamp))
         {
             string image = crownEgg.Type.ToString().ToLower();
 
             CrownEggListItem crownEggListItem = new
             (
-                BackgroundColor: crownEggBackgroundColor++ % 2 == 0 ? _backgroundColor1 : _backgroundColor2,
                 Id: crownEgg.Id ?? string.Empty,
                 Image: image,
                 PlayerName: crownEgg.PlayerName,

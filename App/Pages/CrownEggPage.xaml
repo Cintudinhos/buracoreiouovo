@@ -8,13 +8,18 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding GoToAddCrownEggPageCommand}"
-                     IconImageSource="add.png"
                      Order="Primary"
                      Priority="0"
-                     Text="Adicionar" />
+                     Text="Adicionar">
+
+            <ToolbarItem.IconImageSource>
+                <FontImageSource Color="{AppThemeBinding Light=Black, Dark=White}"
+                                 FontFamily="MaterialIcons"
+                                 Glyph="&#xe145;" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
 
         <ToolbarItem Command="{Binding GoToConfigPageCommand}"
-                     IconImageSource="settings.png"
                      Order="Secondary"
                      Priority="0"
                      Text="Configurações" />
@@ -61,8 +66,7 @@
                         <CollectionView ItemsSource="{Binding Crowns}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="viewmodels:CrownEggItem">
-                                    <Grid BackgroundColor="{Binding BackgroundColor}"
-                                          Margin="10,5">
+                                    <Grid Margin="10,5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
@@ -101,8 +105,7 @@
                         <CollectionView ItemsSource="{Binding Eggs}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="viewmodels:CrownEggItem">
-                                    <Grid BackgroundColor="{Binding BackgroundColor}"
-                                          Margin="10,5">
+                                    <Grid Margin="10,5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />

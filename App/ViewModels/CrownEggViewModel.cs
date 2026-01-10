@@ -13,7 +13,6 @@ namespace App.ViewModels;
 
 public record class CrownEggItem
 (
-    Color BackgroundColor,
     int Quantity,
     string PlayerName
 );
@@ -130,12 +129,6 @@ public partial class CrownEggViewModel(IAuthService authService,
             })
             .OrderByDescending(groupedCrownEgg => groupedCrownEgg.Quantity);
 
-        Color _backgroundColor1 = Color.FromArgb("fffefefe");
-        Color _backgroundColor2 = Color.FromArgb("ffefefef");
-
-        int crownBackgroundColor = 0;
-        int eggBackgroundColor = 0;
-
         foreach (var groupedCrownEgg in groupedCrownEggs)
         {
             switch (groupedCrownEgg.Type)
@@ -143,7 +136,6 @@ public partial class CrownEggViewModel(IAuthService authService,
                 case CrownOrEgg.Crown:
                     CrownEggItem crownItem = new
                     (
-                        BackgroundColor: crownBackgroundColor++ % 2 == 0 ? _backgroundColor1 : _backgroundColor2,
                         PlayerName: groupedCrownEgg.PlayerName,
                         Quantity: groupedCrownEgg.Quantity
                     );
@@ -154,7 +146,6 @@ public partial class CrownEggViewModel(IAuthService authService,
                 case CrownOrEgg.Egg:
                     CrownEggItem eggItem = new
                     (
-                        BackgroundColor: eggBackgroundColor++ % 2 == 0 ? _backgroundColor1 : _backgroundColor2,
                         PlayerName: groupedCrownEgg.PlayerName,
                         Quantity: groupedCrownEgg.Quantity
                     );

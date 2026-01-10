@@ -9,10 +9,16 @@
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding GoToAddCrownEggPageCommand}"
-                     IconImageSource="add.png"
                      Order="Primary"
                      Priority="0"
-                     Text="Adicionar" />
+                     Text="Adicionar">
+
+            <ToolbarItem.IconImageSource>
+                <FontImageSource Color="{AppThemeBinding Light=Black, Dark=White}"
+                                 FontFamily="MaterialIcons"
+                                 Glyph="&#xe145;" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding RefreshCommand}"
@@ -52,8 +58,7 @@
                         <CollectionView ItemsSource="{Binding CrownEggsList}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="viewmodels:CrownEggListItem">
-                                    <Grid BackgroundColor="{Binding BackgroundColor}"
-                                          ColumnSpacing="10"
+                                    <Grid ColumnSpacing="10"
                                           Padding="10">
 
                                         <Grid.GestureRecognizers>
